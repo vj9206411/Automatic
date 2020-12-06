@@ -1,0 +1,45 @@
+#define echoPin 3 // attach pin D3 Arduino to pin Echo of HC-SR04
+#define trigPin 10 //attach pin D10 Arduino to pin Trig of HC-SR04
+int relayPin=5;//attach relays in to D5 of Arduino(DC Pump is connected to Arduino)
+// defines variables
+long duration; // variable for the duration of sound wave travel
+int distance; // variable for the distance measurement
+
+long inch;
+void setup() {
+pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+pinMode(relayPin, OUTPUT);
+Serial.begin(9600);// Serial Communication is starting with 9600 of baudrate speed 9600
+Serial.println("Ultrasonic sensor HC-SR04 Test"); // print some text in Serial Monitor
+Serial.println("with the arduino");
+
+}
+void loop() {
+
+// Clears the trigPin condition
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+// Reads the echoPin, returns the sound wave travel time in microseconds
+duration = pulseIn(echoPin, HIGH);
+// Calculating the distance
+distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+inch=distance/2.54;//converting cm to inch
+// Displays the distance on the Serial Monitor
+if(distance<8)//Set the distance in centemeters(When an obstacle is detected the liquid will dispense)
+{
+digitalWrite(relayPin, LOW);//LOW for the relay to be on
+delay(370);//For how many milliseconds your Pump works for pumping the liquid(Dispensing quantity)
+digitalWrite(relayPin, HIGH);//HIGH for the relay to be off
+delay(3700);//Delay after each dispensing
+}
+else
+{
+digitalWrite(relayPin, HIGH);
+}
+
+}
